@@ -44,6 +44,6 @@ contract ffreecap is Ownable {
         rewards[msg.sender] = 0;
     }
     
-
-   
+  
+     
 }

@@ -1426,6 +1426,9 @@ contract NFT is ERC721Enumerable, Ownable {
         setDistributer(_distibuter);
         }
 
+
+        
+
     // internal
     function _baseURI() internal view virtual override returns (string memory) {
         return baseURI;
