@@ -88,4 +88,8 @@ contract holder is Ownable {
         platformfee = _tax;
     }
 
+    function stakedAmount(address _ad) public view returns(uint) {
+        return amount[_ad];
+    }
+
 }
