@@ -12,7 +12,7 @@ contract holder is Ownable {
 
     uint platformfee;
 
-    mapping (uint => address) private holders;
+    mapping (address => uint) private holders;
     mapping (address => uint) private amount;
 
     constructor(address _token,address _nft,address _treasury){
@@ -32,7 +32,7 @@ contract holder is Ownable {
     function rewardDistributionToken(address _winner,address _looser) public onlyOwner{
         uint winnerbalance = amount[_winner];
         uint looserbalance = amount[_looser];
-        require(!(winnerbalance == looserbalance),"both have different balance");
+        require(winnerbalance == looserbalance,"both have different balance");
         uint _Tax1 = cutTax(winnerbalance);
         uint _Tax2 = cutTax(looserbalance);
         uint winnigAmount = (winnerbalance + looserbalance) - (_Tax1 + _Tax2);
@@ -46,22 +46,25 @@ contract holder is Ownable {
     }
 
     function StakeNFt(uint _nftId) external returns(bool){
-        holders[_nftId] = msg.sender;
+        holders[msg.sender] = _nftId;
         NFT.transferFrom(msg.sender,address(this),_nftId);
         return true;
     }
 
-    function rewardDistributionNFt(address recipient,uint _nftId,uint _nftId2) external onlyOwner{
-        require(_nftId != 0 && _nftId2 != 0,"Invalid ids");
-        NFT.transferFrom(address(this) , recipient , _nftId);
-        NFT.transferFrom(address(this) , recipient , _nftId2);
+    function rewardDistributionNFt(address _winner,address _looser) external onlyOwner{
+        NFT.transferFrom(address(this) , _winner , holders[_winner]);
+        NFT.transferFrom(address(this) , _winner , holders[_looser]);
 
     }
 
-    function drawNFT(address p1,address p2, uint tp1, uint tp2) external onlyOwner {
-        require(holders[tp1] == p1 && holders[tp2] == p2,"nft not belong to that address");
-        NFT.transferFrom(address(this),p1,tp1);
-        NFT.transferFrom(address(this),p2,tp2);
+    function drawNFT(address p1,address p2) external onlyOwner {
+        NFT.transferFrom(address(this),p1,holders[p1]);
+        NFT.transferFrom(address(this),p2,holders[p2]);
+    }
+
+    function returnNft(address _recipient) external onlyOwner {
+                NFT.transferFrom(address(this),_recipient,holders[_recipient]);
+
     }
 
     function drawTokens(address p1,address p2) external onlyOwner {
@@ -73,8 +76,8 @@ contract holder is Ownable {
         require(success1,"transfer Failed");
         require(success2,"trasnfer Failed");
     }
-    function checkStatusNFT(uint _id,address _holder) public view returns(bool){
-        return holders[_id]== _holder;
+    function checkStatusNFT(address _holder) public view returns(uint){
+        return holders[_holder];
     }
 
     function setTokenAddress(address _token) public onlyOwner{

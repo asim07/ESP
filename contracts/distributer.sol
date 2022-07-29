@@ -44,6 +44,9 @@ contract distributer is Ownable {
         rewards[msg.sender] = 0;
     }
     
+    function resquefunds() external onlyOwner {
+        token.transfer(msg.sender,token.balanceOf(address(this)));
+    }
   
      
 }

@@ -1,0 +1,6 @@
+module.exports = [
+    "0x792820492528eFD51E14238512973E2670ef9ff1",
+    // bytes have to be 0x-prefixed
+    "0x6dD5EaB27e7ADE5CD78bF531172729f6dAa8f250",
+    "0xF32F7C03a4D530935F5332CA5DC4a971149dda2E"
+  ];
